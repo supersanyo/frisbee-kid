@@ -41,6 +41,9 @@ Extract the contents to `vlc` folder as shown in folder structure
 Since PowerShell does not natively display UTF-8, unlike the PowerShell IDE. It is recommended to run the script from PowerShell IDE.
 To do so, right click on `fly-frisbee.ps1` and select **Edit**. After PowerShell IDE pops up, follow the demo to run the script.
 
+#### Online vs Local Database
+If the JSON for the DVD is already available [here](https://github.com/supersanyo/frisbee-kid/tree/master/dvd), use the online database. If not, use local database and refer to [JSON File Format](#json-file-format) section to create your own JSON file.
+
 ### Mac
 #### Folder Structure
 The working directory should have a structure as shown below.
@@ -58,6 +61,8 @@ Go to [VLC website](https://www.videolan.org/vlc/download-macosx.html) and insta
 
 #### Run the scripts
 Open **Terminal** and navigate to `frisbee-kid` directory. Type `python frisbee.py` to execute the script. The rest should be the same as the demo
+
+## JSON File Format
 
 ## Contributing
 ## FAQ

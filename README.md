@@ -1,5 +1,5 @@
 # frisbee-kid
-> DVD Rip Script to MP4/MP3 for Windows
+> DVD Rip Script to MP4/MP3 for Windows and MacOS
 
 ## Demo / Usage
 ### Windows
@@ -89,6 +89,9 @@ The intent of the JSON file is to assist the DVD ripper so that the script knows
 	}
 }
 ```
+
+### Title/Chapter Information from DVD
+TODO: Add demo gif in VLC
 
 ### JSON File Synta Checker
 Here are 2 online tools that can help you check if your JSON file has any syntax issue.

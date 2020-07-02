@@ -3,7 +3,7 @@
 
 ## Demo / Usage
 ### Windows
-![Windows Demo](https://g.recordit.co/qcszdoyvMJ.gif)
+![Windows Demo](http://g.recordit.co/qcszdoyvMJ.gif)
 
 ### MacOS
 Enter the following in Terminal to run the script

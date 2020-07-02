@@ -62,7 +62,38 @@ Go to [VLC website](https://www.videolan.org/vlc/download-macosx.html) and insta
 #### Run the scripts
 Open **Terminal** and navigate to `frisbee-kid` directory. Type `python frisbee.py` to execute the script. The rest should be the same as the demo
 
+#### Online vs Local Database
+If the JSON for the DVD is already available [here](https://github.com/supersanyo/frisbee-kid/tree/master/dvd), use the online database. If not, use local database and refer to [JSON File Format](#json-file-format) section to create your own JSON file.
+
 ## JSON File Format
+The intent of the JSON file is to assist the DVD ripper so that the script knows that `title`, `chapter` to parse and the name to save it to. Once the JSON for the dvd file is prepared, put it in `dvd` folder.
+
+### Example JSON File
+```
+{
+	"2": {                                          // "2" indicates the title number in the DVD
+		"name": "巧虎快樂版-2020-01",            // "name" is the folder where the MP4/3s will be dumped to
+		"chapters": [                           // List of chapters in the the title "2" in order
+			"唱唱跳跳 恭喜恭喜",              // Chapter 1
+			"歡樂故事屋 雨天同樂會",          // Chapter2
+			"自然大驚奇 青蛙大觀察",
+			"特別企劃 一起來玩跳跳青蛙",
+			"團體生活好好玩 專心聽老師說話",
+			"動手玩一玩(1) 邏輯創意巧拼組",
+			"我會保護自己 小心燙傷",
+			"動手玩一玩(2) 邏輯創意巧拼組",
+			"生活加油特輯 保護眼睛加油",
+			"智育動動腦 數字與數量對應",
+			"教材預告"                          // Chapter 11
+		]
+	}
+}
+```
+
+### JSON File Synta Checker
+Here are 2 online tools that can help you check if your JSON file has any syntax issue.
+1. https://jsoneditoronline.org/
+2. https://jsonformatter.org/json-editor
 
 ## Contributing
 ## FAQ

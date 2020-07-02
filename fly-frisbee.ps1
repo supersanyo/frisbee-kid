@@ -1,6 +1,4 @@
-﻿Remove-Item -Path log.txt -ErrorAction Ignore
-
-<#
+﻿<#
     Select DVD Drive Location
 #>
 $drives = Get-CimInstance Win32_LogicalDisk | ?{ $_.DriveType -eq 5} | select DeviceID
@@ -58,23 +56,29 @@ If ($sel -eq 0) {
     Key Parameter:
         $content (PSObject)
 #>
+$vlc = '.\vlc\vlc.exe'
+$vlc_common = '-I dummy --no-loop --no-repeat --play-and-exit '
 foreach ($t in $content.psobject.Properties.name) {
     $chapters = $content.$t.chapters
     $folder = $content.$t.name
+
     New-Item -Path . -Force -Name $folder -ItemType "directory" -ErrorAction Ignore
     For($i = 0; $i -lt $chapters.Length; $i += 1) {
         Write-Host ('Title {0}, Chapter {1}' -f $folder, $chapters[$i])
 
         $n = $i+1
-        # Handbrake - dvd to mp4
-        $video_file = "{0}\{1}.{2}.mp4" -f $folder, $n, $chapters[$i]
-        Write-Host ('  Generating Video File - {0}' -f $video_file)
-        #.\handbrake\HandBrakeCLI.exe -i $drive -t $t -c $n --preset "Fast 480p30" -o "$video_file" 2>&1 | Out-File -FilePath log.txt -Append
+        $name = "{0}\{1}.{2}" -f $folder, $n, $chapters[$i]
+
+
+        # VLC - dvd to mp4
+        Write-Host '  Generating Video File'
+        $video_params = 'dvdsimple:///{0}/#{1}:{2}-{1}:{2} --sout "#transcode{{vcodec=h264,acodec=mp4a,vb=800,scale=1,ab=128,channels=2}}:std{{access=file,mux=mp4,dst={3}.mp4}}"' -f ($drive, $t, $n, $name)
+        Start-Process -Wait $vlc ($vlc_common + $video_params)
 
         # VLC - mp4 to mp3
-        $mp3_file = "{0}\{1}.{2}.mp3" -f $folder, $n, $chapters[$i]
-        Write-Host ('  Generating Audio File - {0}' -f $mp3_file)
-        #.\vlc\vlc.exe -I dummy --no-loop --no-repeat --sout "#transcode{vcodec=none,acodec=mp3,ab=192,channels=2,samplerate=44100}:std{access=file,dst=$mp3_file}" $video_file vlc://quit
+        Write-Host '  Generating Audio File'
+        $audio_params = '--sout "#transcode{{vcodec=none,acodec=mp3,ab=128,channels=2,samplerate=44100}}:std{{access=file,dst={0}.mp3}}" "{0}.mp4"' -f $name
+        Start-Process -Wait $vlc ($vlc_common + $audio_params)
     }
 }
 Read-Host -Prompt 'Press Enter to exit'

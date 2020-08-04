@@ -58,26 +58,29 @@ If ($sel -eq 0) {
 #>
 $vlc = '.\vlc\vlc.exe'
 $vlc_common = '-I dummy --no-loop --no-repeat --play-and-exit '
+$invalidChars = [IO.Path]::GetInvalidFileNameChars() -join ''
+$re = "[{0}]" -f [RegEx]::Escape($invalidChars)
 foreach ($t in $content.psobject.Properties.name) {
     $chapters = $content.$t.chapters
-    $folder = $content.$t.name
+    $folder = $content.$t.name -replace $re
 
     New-Item -Path . -Force -Name $folder -ItemType "directory" -ErrorAction Ignore
     For($i = 0; $i -lt $chapters.Length; $i += 1) {
-        Write-Host ('Title {0}, Chapter {1}' -f $folder, $chapters[$i])
 
         $n = $i+1
-        $name = "{0}\{1}.{2}" -f $folder, $n, $chapters[$i]
+        $chap = $chapters[$i] -replace $re
+        $name = "{0}\{1}.{2}" -f $folder, $n, $chap
 
-
+        
+        Write-Host ('Title {0}, Chapter {1}' -f $folder, $chap)
         # VLC - dvd to mp4
         Write-Host '  Generating Video File'
-        $video_params = 'dvdsimple:///{0}/#{1}:{2}-{1}:{2} --sout "#transcode{{vcodec=h264,acodec=mp4a,vb=800,scale=1,ab=128,channels=2}}:std{{access=file,mux=mp4,dst={3}.mp4}}"' -f ($drive, $t, $n, $name)
+        $video_params = 'dvdsimple:///{0}/#{1}:{2}-{1}:{2} --sout "#transcode{{vcodec=h264,acodec=mp4a,vb=800,scale=1,ab=128,channels=2}}:std{{access=file,mux=mp4,dst=''{3}.mp4''}}"' -f ($drive, $t, $n, $name)
         Start-Process -Wait $vlc ($vlc_common + $video_params)
 
         # VLC - mp4 to mp3
         Write-Host '  Generating Audio File'
-        $audio_params = '--sout "#transcode{{vcodec=none,acodec=mp3,ab=128,channels=2,samplerate=44100}}:std{{access=file,dst={0}.mp3}}" "{0}.mp4"' -f $name
+        $audio_params = '--sout "#transcode{{vcodec=none,acodec=mp3,ab=128,channels=2,samplerate=44100}}:std{{access=file,dst=''{0}.mp3''}}" "{0}.mp4"' -f $name
         Start-Process -Wait $vlc ($vlc_common + $audio_params)
     }
 }
